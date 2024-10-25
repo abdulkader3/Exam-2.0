@@ -6,6 +6,8 @@ function TodoList() {
   const [categories, setCategories] = useState(['General']);
   const [currentCategory, setCurrentCategory] = useState('General');
   const [newCategory, setNewCategory] = useState('');
+  const [showCategoryInput, setShowCategoryInput] = useState(false);
+  const [showCategories, setShowCategories] = useState(false);
 
   // Adds a new task to the selected category
   const addTask = () => {
@@ -42,18 +44,11 @@ function TodoList() {
   // Adds a new category
   const addCategory = () => {
     if (newCategory.trim() && !categories.includes(newCategory)) {
-      setCategories([...categories, newCategory]);
+      setCategories([newCategory, ...categories]);
       setNewCategory('');
       setTasks(prevTasks => ({ ...prevTasks, [newCategory]: [] }));
-    }
-  };
-
-  // Deletes a category and associated tasks
-  const deleteCategory = (category) => {
-    if (category !== 'General') {
-      setCategories(categories.filter(cat => cat !== category));
-      setTasks(({ [category]: _, ...remainingTasks }) => remainingTasks);
-      setCurrentCategory('General');
+      setCurrentCategory(newCategory);
+      setShowCategoryInput(false);
     }
   };
 
@@ -67,29 +62,64 @@ function TodoList() {
 
       {/* Category Section */}
       <div className="w-full max-w-xl mb-4">
-        <div className="flex flex-wrap gap-2 mb-2">
-          {categories.map(category => (
-            <button 
-              key={category}
-              onClick={() => setCurrentCategory(category)}
-              className={`px-4 py-1 rounded-full ${
-                currentCategory === category ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-        <input 
-          type="text" 
-          value={newCategory}
-          onChange={(e) => setNewCategory(e.target.value)}
-          placeholder="Add new category..."
-          className="p-2 border border-gray-300 rounded-l-lg w-3/4"
-        />
-        <button onClick={addCategory} className="bg-blue-600 text-white p-2 rounded-r-lg hover:bg-blue-500">
-          Add
+        {/* Toggle Button for Category Input */}
+        <button 
+          onClick={() => setShowCategoryInput(!showCategoryInput)} 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
+        >
+          {showCategoryInput ? 'Hide' : 'Add Category'}
         </button>
+
+        {/* Category Input */}
+        {showCategoryInput && (
+          <div className="flex mt-2">
+            <input 
+              type="text" 
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              placeholder="Enter new category..."
+              className="p-2 border border-gray-300 rounded-l-lg w-3/4"
+            />
+            <button onClick={addCategory} className="bg-blue-600 text-white p-2 rounded-r-lg hover:bg-blue-500">
+              Add
+            </button>
+          </div>
+        )}
+
+        {/* Collapsible Categories */}
+        <div className="flex items-center mt-4">
+          {/* Main Category Button */}
+          <button 
+            onClick={() => setCurrentCategory(categories[0])}
+            className="px-4 py-1 rounded-full bg-blue-600 text-white mr-2"
+          >
+            {categories[0]}
+          </button>
+
+          {/* Toggle for Other Categories */}
+          <button onClick={() => setShowCategories(!showCategories)} className="text-gray-500">
+            <span className={`transform ${showCategories ? 'rotate-180' : 'rotate-0'}`}>
+              ▼
+            </span>
+          </button>
+
+          {/* Other Categories (Collapsible) */}
+          {showCategories && (
+            <div className="ml-2 flex flex-wrap gap-2">
+              {categories.slice(1).map(category => (
+                <button 
+                  key={category}
+                  onClick={() => setCurrentCategory(category)}
+                  className={`px-4 py-1 rounded-full ${
+                    currentCategory === category ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Input Section */}
