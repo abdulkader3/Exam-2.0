@@ -52,17 +52,51 @@ function TodoList() {
     }
   };
 
+  // Counts total tasks across all categories
+  const getTotalTaskCount = () => {
+    return Object.values(tasks).reduce((count, categoryTasks) => count + categoryTasks.length, 0);
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col items-center p-4">
       {/* Header Section */}
-      <header className="w-full max-w-xl text-center mb-8">
-        <h1 className="text-4xl font-bold text-blue-600 mb-2">My To-Do List</h1>
-        <p className="text-gray-500">Organize your tasks by categories</p>
+      <header className="w-full max-w-xl flex items-center justify-between mb-8">
+        <div className="text-center w-full">
+          <h1 className="text-4xl font-bold text-blue-600">My To-Do List</h1>
+          <p className="text-gray-500">Organize your tasks by categories</p>
+        </div>
+        
+        {/* Top-Right Category Counter and Toggle */}
+        <div className="relative">
+          <button 
+            onClick={() => setShowCategories(!showCategories)} 
+            className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-full"
+          >
+            {showCategories ? '▲' : '☰'} {getTotalTaskCount()} 
+          </button>
+
+          {/* Dropdown for Categories */}
+          {showCategories && (
+            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2">
+              {categories.map(category => (
+                <button 
+                  key={category}
+                  onClick={() => setCurrentCategory(category)}
+                  className="block w-full text-left px-4 py-2 hover:bg-blue-100"
+                >
+                  {category} 
+                  <span className="text-blue-600">
+                    ({tasks[category] ? tasks[category].length : 0})
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Category Section */}
       <div className="w-full max-w-xl mb-4">
-        {/* Toggle Button for Category Input */}
         <button 
           onClick={() => setShowCategoryInput(!showCategoryInput)} 
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
@@ -85,41 +119,6 @@ function TodoList() {
             </button>
           </div>
         )}
-
-        {/* Collapsible Categories */}
-        <div className="flex items-center mt-4">
-          {/* Main Category Button */}
-          <button 
-            onClick={() => setCurrentCategory(categories[0])}
-            className="px-4 py-1 rounded-full bg-blue-600 text-white mr-2"
-          >
-            {categories[0]}
-          </button>
-
-          {/* Toggle for Other Categories */}
-          <button onClick={() => setShowCategories(!showCategories)} className="text-gray-500">
-            <span className={`transform ${showCategories ? 'rotate-180' : 'rotate-0'}`}>
-              ▼
-            </span>
-          </button>
-
-          {/* Other Categories (Collapsible) */}
-          {showCategories && (
-            <div className="ml-2 flex flex-wrap gap-2">
-              {categories.slice(1).map(category => (
-                <button 
-                  key={category}
-                  onClick={() => setCurrentCategory(category)}
-                  className={`px-4 py-1 rounded-full ${
-                    currentCategory === category ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Input Section */}
