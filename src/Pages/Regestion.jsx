@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { BeatLoader } from "react-spinners";
-import { Link } from "react-router-dom";
-import './Regestion.css'
+import { Link, useNavigate } from "react-router-dom";
+import "./Regestion.css";
+// firebase
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
+import { Bounce, toast } from "react-toastify";
 
 const Regestion = () => {
   // State for inputs and errors
@@ -40,6 +48,12 @@ const Regestion = () => {
     setConfirmPasswordError("");
   };
 
+
+  // navigate
+  const navigate = useNavigate()
+  // firebse
+  const auth = getAuth();
+
   // Form submission with simple validation
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,9 +69,83 @@ const Regestion = () => {
     } else if (password !== confirmpassword) {
       setConfirmPasswordError("Passwords do not match");
     } else {
-      setLoader(true);
-      // Here, you would typically handle form submission
-      setTimeout(() => setLoader(false), 2000);
+      // firebase
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          // ...
+          console.log(user);
+          updateProfile(auth.currentUser, {
+            displayName: firstName,
+            photoURL:
+              "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png",
+          });
+
+          sendEmailVerification(auth.currentUser).then(() => {});
+          toast(" Login done verify your email ", {
+            position: "top-right",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+
+          navigate('/login')
+
+
+
+
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+
+          // ..
+          console.log(errorCode);
+          if (errorCode == "auth/invalid-email") {
+            toast(" Email is not valid ", {
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              transition: Bounce,
+            });
+          }
+          if (errorCode == "auth/weak-password") {
+            toast(" password is too short ", {
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              transition: Bounce,
+            });
+          }
+          if (errorCode == "auth/email-already-in-use") {
+            toast(" Email already in use ", {
+              position: "top-right",
+              autoClose: 1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              transition: Bounce,
+            });
+          }
+        });
     }
   };
 
@@ -79,11 +167,7 @@ const Regestion = () => {
           </div>
 
           <div className="inputBox">
-            <input
-              onChange={handleEmail}
-              type="email"
-              placeholder="Email"
-            />
+            <input onChange={handleEmail} type="email" placeholder="Email" />
             <p className="errorText">{emailError}</p>
           </div>
 
@@ -112,17 +196,17 @@ const Regestion = () => {
           </div>
 
           {loader ? (
-        <div className="flex justify-center items-center w-full h-[45px] active:scale-105 transition-all border-none outline-none shadow-md cursor-pointer text-[17px] text-[#333] font-semibold rounded-[40px] bg-white loader">
-          <BeatLoader />
-        </div>
-      ) : (
-        <button
-          type="submit"
-          className="w-full h-[45px] active:scale-105 transition-all border-none outline-none shadow-md cursor-pointer text-[17px] text-[#333] font-semibold rounded-[40px] bg-white submitButton"
-        >
-          Sign Up
-        </button>
-      )}
+            <div className="flex justify-center items-center w-full h-[45px] active:scale-105 transition-all border-none outline-none shadow-md cursor-pointer text-[17px] text-[#333] font-semibold rounded-[40px] bg-white loader">
+              <BeatLoader />
+            </div>
+          ) : (
+            <button
+              type="submit"
+              className="w-full h-[45px] active:scale-105 transition-all border-none outline-none shadow-md cursor-pointer text-[17px] text-[#333] font-semibold rounded-[40px] bg-white submitButton"
+            >
+              Sign Up
+            </button>
+          )}
 
           <div className="flex justify-center mt-5">
             <p>Already have an account?</p>

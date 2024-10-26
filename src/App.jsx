@@ -4,6 +4,10 @@ import TodoList from './Pages/TodoList'
 import TodoApp from './Pages/TodoApp'
 import Login from './Pages/Login'
 import Regestion from './Pages/Regestion'
+import app from './firebase.config'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
 
@@ -22,7 +26,7 @@ function App() {
 
   return (
     <>
-
+    <ToastContainer />
     <RouterProvider router={todo}/>
   
     </>

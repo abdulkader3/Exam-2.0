@@ -4,7 +4,7 @@ export const TodoList = createSlice({
 
   name: 'todoList',
   initialState: {
-    TodoListValue: null,
+    value: JSON.parse(localStorage.getItem('todouser')) ? JSON.parse(localStorage.getItem('todouser')) : null,
   },
 
 
