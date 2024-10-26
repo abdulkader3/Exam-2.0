@@ -1,7 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import './App.css'
 import TodoList from './Pages/TodoList'
-import UserProfile from './Pages/UserProfile'
+import TodoApp from './Pages/TodoApp'
 
 function App() {
 
@@ -10,7 +10,7 @@ function App() {
     createRoutesFromElements(
       <Route>
         <Route path='/' element={<TodoList/>}/>
-        <Route path='/userprofile' element={<UserProfile/>}/>
+        <Route path='/userprofile' element={<TodoApp/>}/>
       </Route>
     )
   )
