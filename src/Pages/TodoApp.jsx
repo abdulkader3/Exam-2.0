@@ -44,7 +44,7 @@ function TodoApp() {
           <div className=" w-[100px] h-[100px] rounded-full overflow-hidden ">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoBVSgk5pyue3qoN6eOZ2oZZeWNCVjYKcrvA&s" alt="" />
           </div>
-          <h2 className="text-2xl font-semibold">John Doe</h2>
+          <h2 className="text-2xl font-semibold">SHANTO</h2>
           <p className="text-gray-500 dark:text-gray-400 mt-2">Frontend Developer</p>
           <p className="text-gray-500 dark:text-gray-400">San Francisco, CA</p>
           <div className="flex mt-4 space-x-4">
